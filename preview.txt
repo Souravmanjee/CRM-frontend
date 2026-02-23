@@ -1,0 +1,34 @@
+Navigate to http://localhost:5173/login
+Click on the Login button.
+Wait for url to be http://localhost:5173/
+Wait for 2 seconds.
+
+# Show Dashboard
+Click on "Dashboard" in the sidebar.
+Wait for 2 seconds.
+
+# Show Work
+Click on "Work" in the sidebar.
+Wait for 2 seconds.
+Click on "Add Work Log".
+Wait for 2 seconds.
+Click on "Cancel".
+
+# Show Staff
+Click on "Staff" in the sidebar.
+Wait for 2 seconds.
+
+# Show Diesel
+Click on "Diesel" in the sidebar.
+Wait for 2 seconds.
+
+# Show Cash Register
+Click on "Cash Register" in the sidebar.
+Wait for 2 seconds.
+Click on "New Transaction".
+Wait for 2 seconds.
+Click on "Cancel".
+
+# Exports
+Click on "Export" in any table to demonstrate the dropdown.
+Wait for 2 seconds.
