@@ -1,30 +1,38 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { Mail, Lock, Loader2 } from 'lucide-react';
+import { Mail, Lock, Loader2, User, Briefcase } from 'lucide-react';
 import { apiClient } from '../api/client';
 
-export const Login = () => {
+export const Signup = () => {
+    const [displayName, setDisplayName] = useState('');
+    const [businessName, setBusinessName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+
     const navigate = useNavigate();
     const { setAuth } = useAuthStore();
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMsg('');
         setLoading(true);
 
         try {
-            const response = await apiClient.post('/auth/login', { email, password });
+            const response = await apiClient.post('/auth/register', {
+                email,
+                password,
+                displayName,
+                businessName: businessName || undefined
+            });
             const { user, token } = response.data;
             setAuth(user, token);
             navigate('/');
         } catch (error: any) {
-            console.error('Login error:', error.response?.data || error.message);
-            setErrorMsg(error.response?.data?.message || 'Invalid email or password');
+            console.error('Signup error:', error.response?.data || error.message);
+            setErrorMsg(error.response?.data?.message || 'Failed to create account. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -32,17 +40,17 @@ export const Login = () => {
 
     return (
         <div className="flex min-h-screen">
-            <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:flex-none lg:w-[480px] lg:px-20 mx-auto lg:mx-0">
+            <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:flex-none lg:w-[480px] lg:px-20 mx-auto lg:mx-0 py-12">
                 <div className="w-full max-w-sm mx-auto">
                     <div className="mb-10 text-center lg:text-left">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 mx-auto lg:mx-0 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-primary-500/20 mb-6">
                             S
                         </div>
                         <h2 className="text-3xl font-heading font-bold text-slate-900 dark:text-white tracking-tight">
-                            Welcome back
+                            Create an account
                         </h2>
                         <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-                            Sign in to manage your business operations
+                            Join Suman's CRM to manage your business operations
                         </p>
                     </div>
 
@@ -53,10 +61,47 @@ export const Login = () => {
                             </div>
                         ) : null}
 
-                        <form onSubmit={handleLogin} className="space-y-5">
+                        <form onSubmit={handleSignup} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                                    Email address
+                                    Full Name <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <User className="h-5 w-5 text-slate-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={displayName}
+                                        onChange={(e) => setDisplayName(e.target.value)}
+                                        className="input-field pl-10 h-11"
+                                        placeholder="John Doe"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                    New Business Name
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Briefcase className="h-5 w-5 text-slate-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={businessName}
+                                        onChange={(e) => setBusinessName(e.target.value)}
+                                        className="input-field pl-10 h-11"
+                                        placeholder="Doe Enterprises"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                    Email address <span className="text-red-500">*</span>
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -75,7 +120,7 @@ export const Login = () => {
 
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                                    Password
+                                    Password <span className="text-red-500">*</span>
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -92,7 +137,7 @@ export const Login = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-2">
+                            <div className="pt-4">
                                 <button
                                     type="submit"
                                     disabled={loading}
@@ -101,15 +146,15 @@ export const Login = () => {
                                     {loading ? (
                                         <Loader2 className="animate-spin h-5 w-5" />
                                     ) : (
-                                        'Sign in'
+                                        'Create account'
                                     )}
                                 </button>
                             </div>
 
                             <div className="mt-6 text-center text-sm">
-                                <span className="text-slate-500 dark:text-slate-400">Don't have an account? </span>
-                                <Link to="/signup" className="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
-                                    Create one now
+                                <span className="text-slate-500 dark:text-slate-400">Already have an account? </span>
+                                <Link to="/login" className="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
+                                    Sign in instead
                                 </Link>
                             </div>
                         </form>
@@ -126,26 +171,12 @@ export const Login = () => {
 
                         <div className="absolute inset-0 flex items-center justify-center flex-col text-center p-12 z-10">
                             <h2 className="text-4xl lg:text-5xl font-heading font-bold text-white mb-6 leading-tight">
-                                All your business tools.<br />
-                                <span className="text-primary-300">One intelligent platform.</span>
+                                Start scaling today<br />
+                                <span className="text-primary-300">with Suman's CRM.</span>
                             </h2>
                             <p className="text-lg text-primary-100 max-w-xl">
-                                Manage ledgers, track inventory, process payments, and oversee staff from any device, anywhere in the world.
+                                Instantly generate analytical reports, track daily operations, and streamline workflows.
                             </p>
-
-                            <div className="mt-12 glass-panel p-6 w-full max-w-md rounded-2xl border border-white/10 text-left">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="font-semibold text-white">Monthly Growth</div>
-                                    <div className="text-emerald-400 font-medium">+24.5%</div>
-                                </div>
-                                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
-                                    <div className="h-full bg-primary-400 w-3/4 rounded-full"></div>
-                                </div>
-                                <div className="flex justify-between mt-2 text-xs text-primary-200">
-                                    <span>Current Target</span>
-                                    <span>$12,500</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
