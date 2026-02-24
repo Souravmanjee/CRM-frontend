@@ -13,7 +13,7 @@ export const Layout = ({ children, title }: LayoutProps) => {
 
     return (
         <div className="flex h-screen bg-slate-50 dark:bg-bg-dark overflow-hidden selection:bg-primary-500/30">
-            <Sidebar />
+            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             {/* Mobile Sidebar Backdrop */}
             <AnimatePresence>
